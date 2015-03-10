@@ -1,5 +1,7 @@
 package pt.c01interfaces.s01knowledge.s02app.actors;
 
+import java.util.ArrayList;
+
 import pt.c01interfaces.s01knowledge.s01base.impl.BaseConhecimento;
 import pt.c01interfaces.s01knowledge.s01base.inter.IBaseConhecimento;
 import pt.c01interfaces.s01knowledge.s01base.inter.IDeclaracao;
@@ -20,24 +22,58 @@ public class Enquirer implements IEnquirer
 	public void connect(IResponder responder)
 	{
         IBaseConhecimento bc = new BaseConhecimento();
+		boolean acertei = true;
+        
+		String[] listaAnimais;
 		
-		obj = bc.recuperaObjeto("tiranossauro");
-
-		IDeclaracao decl = obj.primeira();
+		listaAnimais = bc.listaNomes();
+	
+		ArrayList<String> perguntadas = new ArrayList<String>();
+		ArrayList<String> respondidas = new ArrayList<String>();
 		
-        boolean animalEsperado = true;
-		while (decl != null && animalEsperado) {
-			String pergunta = decl.getPropriedade();
-			String respostaEsperada = decl.getValor();
+		boolean animalEsperado = false;
+		
+		int i = 0;
+		
+		while (!animalEsperado) {
 			
-			String resposta = responder.ask(pergunta);
-			if (resposta.equalsIgnoreCase(respostaEsperada))
-				decl = obj.proxima();
-			else
-				animalEsperado = false;
+			obj = bc.recuperaObjeto(listaAnimais[i]);
+			
+			IDeclaracao decl = obj.primeira();
+		
+			animalEsperado = true;
+        
+			String resposta;
+			
+			while (decl != null && animalEsperado) {
+				
+				String pergunta = decl.getPropriedade();
+				
+				String respostaEsperada = decl.getValor();
+			
+				if (!perguntadas.contains(pergunta)){
+					
+					perguntadas.add(pergunta);
+					resposta = responder.ask(pergunta);
+					respondidas.add(resposta);
+				}
+					
+				else{
+					resposta = respondidas.get(perguntadas.indexOf(pergunta));				
+				}
+				
+				if (resposta.equalsIgnoreCase(respostaEsperada)){
+					decl = obj.proxima();
+				}else{
+					animalEsperado = false;
+					i++;
+				}
+			}
+			
 		}
 		
-		boolean acertei = responder.finalAnswer("tiranossauro");
+		if (animalEsperado)
+			acertei = responder.finalAnswer(listaAnimais[i]);
 		
 		if (acertei)
 			System.out.println("Oba! Acertei!");
