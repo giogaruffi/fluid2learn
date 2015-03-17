@@ -14,26 +14,26 @@ public class BaseConhecimento implements IBaseConhecimento
 {
 	public static final String DIRETORIO_RELATIVO = "../../s02app/bd",
 	                           EXTENSAO = ".txt";
-	private String diretorio = BaseConhecimento.class.getResource(DIRETORIO_RELATIVO).getPath();
+	String diretorio = BaseConhecimento.class.getResource(DIRETORIO_RELATIVO).getPath();
 	
-	private String scenario;
+	String scenario;
 	
 	public void setScenario(String scenario) {
 		this.scenario = scenario;
 	}
 	
-    public String[] listaNomes()
+    public Vector<String> listaNomes()
     {
     	File diretorioRaiz = new File(diretorio + "/" + scenario);
-        
+    	
         String lista[] = diretorioRaiz.list();
         Vector<String> listaFiltrada = new Vector<String>();
-        
+     
         for (int n = 0; n < lista.length; n++)
             if (lista[n].endsWith(".txt"))
                 listaFiltrada.add(lista[n].substring(0, lista[n].length() - 4));
         
-        return (String[])listaFiltrada.toArray(new String[0]);
+        return listaFiltrada;
     }
     
     public IObjetoConhecimento recuperaObjeto(String nome)

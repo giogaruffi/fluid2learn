@@ -1,5 +1,6 @@
 package pt.c02classes.s01knowledge.s02app.actors;
 
+import java.util.ArrayList;
 import pt.c02classes.s01knowledge.s01base.impl.BaseConhecimento;
 import pt.c02classes.s01knowledge.s01base.inter.IBaseConhecimento;
 import pt.c02classes.s01knowledge.s01base.inter.IDeclaracao;
@@ -17,33 +18,50 @@ public class EnquirerAnimals implements IEnquirer {
 	
 	public boolean discover() {
         IBaseConhecimento bc = new BaseConhecimento();
-        IObjetoConhecimento obj;
-		
-		bc.setScenario("animals");
-        obj = bc.recuperaObjeto("tiranossauro");
+    	IObjetoConhecimento obj;
 
-		IDeclaracao decl = obj.primeira();
+        boolean acertei = true;
 		
-        boolean animalEsperado = true;
-		while (decl != null && animalEsperado) {
-			String pergunta = decl.getPropriedade();
-			String respostaEsperada = decl.getValor();
+		ArrayList<String> perguntadas = new ArrayList<String>();
+		ArrayList<String> respondidas = new ArrayList<String>();
+
+		boolean animalEsperado = false;
+
+		for(String escolhido : bc.listaNomes()){
 			
-			String resposta = responder.ask(pergunta);
-			if (resposta.equalsIgnoreCase(respostaEsperada))
-				decl = obj.proxima();
+			obj = bc.recuperaObjeto(escolhido);
+			IDeclaracao decl = obj.primeira();
+			animalEsperado = true;
+
+			String resposta;
+
+			while (decl != null && animalEsperado) {
+				String pergunta = decl.getPropriedade();
+				String respostaEsperada = decl.getValor();
+
+				if (!perguntadas.contains(pergunta)){
+					perguntadas.add(pergunta);
+				
+					resposta = responder.ask(pergunta);
+					
+					respondidas.add(resposta);
+				}else{
+					resposta = respondidas.get(perguntadas.indexOf(pergunta));
+				}
+				if (resposta.equalsIgnoreCase(respostaEsperada)){
+					decl = obj.proxima();
+				}else{
+					animalEsperado = false;
+				}
+			}
+			if (animalEsperado)
+				acertei = responder.finalAnswer(escolhido);
+			if (acertei)
+				System.out.println("Oba! Acertei!");
 			else
-				animalEsperado = false;
+				System.out.println("fuem! fuem! fuem!");
 		}
-		
-		boolean acertei = responder.finalAnswer("tiranossauro");
-		
-		if (acertei)
-			System.out.println("Oba! Acertei!");
-		else
-			System.out.println("fuem! fuem! fuem!");
 		
 		return acertei;
 	}
-
 }
