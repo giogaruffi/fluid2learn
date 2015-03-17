@@ -26,14 +26,14 @@ public class OrchestratorInit
 		
 		boolean jogo = false;
 		boolean rolou = false;
-		
+		//Pergunta qual jogo
 		while(!jogo){
 			System.out.print("(A)nimals ou (M)aze?");
 			String tipo = scanner.nextLine();
 			
 			if(tipo.equalsIgnoreCase("A")){
 				jogo = true;
-				
+				//Pergunta qual animal
 				while(!rolou){
 					System.out.print("Qual o nome do animal a ser adivinhado?");
 					String animal_type = scanner.nextLine();
@@ -42,7 +42,7 @@ public class OrchestratorInit
 					base.setScenario("animals");
 					
 					Vector<String> listaAnimais = base.listaNomes();
-					
+					//Roda o jogo para o animal escolhido
 					if(listaAnimais.contains(animal_type)){
 						System.out.println("Enquirer com " + animal_type + "...");
 						stat = new Statistics();
@@ -53,6 +53,7 @@ public class OrchestratorInit
 						System.out.println("----------------------------------------------------------------------------------------\n");
 						
 						rolou = true;
+					//Caso o animal seja invalido
 					}else{
 						System.out.println("Animal inexistente, tente novamente\n");
 					}
@@ -60,7 +61,7 @@ public class OrchestratorInit
 			}
 			else if(tipo.equalsIgnoreCase("M")){
 				jogo = true;
-				
+				//Pergunta o nome do labirinto
 				while(!rolou){
 					System.out.print("Qual o nome do labirinto a ser usado?");
 					String maze_type = scanner.nextLine();
@@ -75,6 +76,7 @@ public class OrchestratorInit
 				
 					rolou = true;
 				}
+			//Caso o labirinto seja invalido
 			}else{
 				System.out.print("Jogo inexistente, tente novamente\n");
 			}
